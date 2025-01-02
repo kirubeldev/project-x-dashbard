@@ -18,7 +18,7 @@ const BookingPage = () => {
         const response = await fetch('https://projectx-backend-escf.onrender.com/api/v1/getAllBookings'); // Replace with your actual API endpoint
         const data = await response.json();
         console.log(data); // Log the response data to ensure it's in the correct format
-        setBookings(data);
+        setBookings(data.reverse());
       } catch (error) {
         console.error("Error fetching bookings:", error);
       } finally {
