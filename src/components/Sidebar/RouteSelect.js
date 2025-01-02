@@ -59,6 +59,14 @@ export const RouteSelect = () => {
         />
       </Link>
 
+      <Link href={"/bookings"}>
+        <Route
+          Icon={BsHouse}
+          selected={pathname === "bookings"}
+          title="Bookings"
+        />
+      </Link>
+
       <Link href={"/addadmin"}>
         <Route
           Icon={FiLink}
