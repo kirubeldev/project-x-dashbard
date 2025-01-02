@@ -9,13 +9,13 @@ const BookingPage = () => {
   const [loading, setLoading] = useState(true);
   const [selectedBooking, setSelectedBooking] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const bookingsPerPage = 10;
+  const bookingsPerPage = 7;
 
   // Fetch bookings data from API
   useEffect(() => {
     const fetchBookings = async () => {
       try {
-        const response = await fetch("http://localhost:8000/api/v1/getAllBookings");
+        const response = await fetch('https://projectx-backend-escf.onrender.com/api/v1/getAllBookings'); // Replace with your actual API endpoint
         const data = await response.json();
         console.log(data); // Log the response data to ensure it's in the correct format
         setBookings(data);
@@ -98,12 +98,12 @@ const BookingPage = () => {
                   onClick={() => handleRowClick(item)}
                   className={`${(index + indexOfFirstBooking) % 2 === 0 ? "bg-white" : "bg-gray-200"}  text-sm hover:bg-gray-300 cursor-pointer`}
                 >
-                  <td className="p-2">{item.name || "No Name"}</td>
-                  <td className="p-2">{item.propertyId || "N/A"}</td>
-                  <td className="p-2">{item.email || "N/A"}</td>
-                  <td className="p-2">{item.phone || "N/A"}</td>
-                  <td className="p-2">{truncateMessage(item.message || "No message")}</td>
-                  <td className="p-2">{formatDate(item.createdAt) || "No Date"}</td>
+                  <td className="p-2">{item?.name || "No Name"}</td>
+                  <td className="p-2">{item?._id}</td>
+                  <td className="p-2">{item?.email || "N/A"}</td>
+                  <td className="p-2">{item?.phone || "N/A"}</td>
+                  <td className="p-2">{truncateMessage(item?.message || "No message")}</td>
+                  <td className="p-2">{formatDate(item?.createdAt) || "No Date"}</td>
                 </tr>
               ))}
             </tbody>
@@ -136,11 +136,11 @@ const BookingPage = () => {
             </button>
             <h2 className="text-xl font-bold mb-4">{selectedBooking.name || "No Name"}</h2>
             <div className="mb-2">
-              <p>Property ID: {selectedBooking.propertyId || "N/A"}</p>
-              <p>Email: {selectedBooking.email || "N/A"}</p>
-              <p>Phone: {selectedBooking.phone || "N/A"}</p>
-              <p>Message: {selectedBooking.message || "No message available"}</p>
-              <p>Created At: {formatDate(selectedBooking.createdAt) || "No Date"}</p>
+              <p>Property ID: {selectedBooking?.propertyId || "N/A"}</p>
+              <p>Email: {selectedBooking?.email || "N/A"}</p>
+              <p>Phone: {selectedBooking?.phone || "N/A"}</p>
+              <p>Message: {selectedBooking?.message || "No message available"}</p>
+              <p>Created At: {formatDate(selectedBooking?.createdAt) || "No Date"}</p>
             </div>
           </div>
         </div>

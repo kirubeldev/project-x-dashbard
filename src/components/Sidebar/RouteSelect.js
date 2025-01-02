@@ -62,7 +62,7 @@ export const RouteSelect = () => {
       <Link href={"/bookings"}>
         <Route
           Icon={BsHouse}
-          selected={pathname === "bookings"}
+          selected={pathname === "/bookings"}
           title="Bookings"
         />
       </Link>
