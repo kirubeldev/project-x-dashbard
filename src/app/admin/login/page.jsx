@@ -32,11 +32,13 @@ function AdminLogin() {
 
       if (response.data.user) { // Check if user data is present
         toast.success(response.data.message);
-        
-        localStorage.setItem("username",  response.data.user.fullname.split(" ")[0])
-        localStorage.setItem("email",  response.data.user.email)
-        // Optionally store the token in local storage or state
-        localStorage.setItem("token", response.data.token);
+        if (typeof window !== 'undefined') {
+
+          localStorage.setItem("username",  response.data.user.fullname.split(" ")[0])
+          localStorage.setItem("email",  response.data.user.email)
+          // Optionally store the token in local storage or state
+          localStorage.setItem("token", response.data.token);
+        }
         // You may also want to store user info for later use
 
         router.push('/dashboard'); // Navigate to the admin dashboard
