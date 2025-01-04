@@ -46,7 +46,7 @@ function AdminLogin() {
         toast.error(response.data.message || "Invalid credentials");
       }
     } catch (error) {
-      console.error("Login Error:", error);
+      console.error("Login Error:", error.message);
       toast.error("An error occurred during login.");
     }
   };
