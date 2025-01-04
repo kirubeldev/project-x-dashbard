@@ -5,9 +5,9 @@ import "react-toastify/dist/ReactToastify.css";
 
 function AddAdmin() {
   const [formData, setFormData] = useState({
-    fullName: "",
+    fullname: "",
     email: "",
-    phone: "",
+    phonenumber: "",
     role: "Admin",
     password: "",
   });
@@ -19,28 +19,54 @@ function AddAdmin() {
   };
 
   // Handle form submission
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     // Validate fields
-    if (
-      !formData.fullName ||
-      !formData.email ||
-      !formData.phone ||
-      !formData.password
-    ) {
-      toast.error("Please fill in all required fields.");
-      return;
-    }
-
+   
     if (!/\S+@\S+\.\S+/.test(formData.email)) {
       toast.error("Invalid email format.");
       return;
     }
 
-    // Submit logic here (API call)
-    toast.success("Admin added successfully!");
-    console.log("Form Submitted: ", formData);
+    if (formData.phonenumber.length !== 10) {
+      toast.error("phonenumber number must be 10 digits.");
+      return;
+    }
+
+    try {
+      // Exclude the `role` field
+      const { role, ...dataToSend } = formData;
+
+      const response = await fetch("https://projectx-backend-escf.onrender.com/api/v1/adminRegister", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(dataToSend),
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        toast.success("Admin added successfully!");
+        console.log("Success:", result);
+        // Clear form fields after successful submission
+        setFormData({
+          fullname: "",
+          email: "",
+          phonenumber: "",
+          role: "Admin",
+          password: "",
+        });
+      } else {
+        const errorData = await response.json();
+        toast.error(errorData.error || "Failed to add admin.");
+        console.error("Error:", errorData);
+      }
+    } catch (error) {
+      toast.error("An error occurred while adding the admin.");
+      console.error("Error:", error);
+    }
   };
 
   return (
@@ -58,8 +84,8 @@ function AddAdmin() {
             </label>
             <input
               type="text"
-              name="fullName"
-              value={formData.fullName}
+              name="fullname"
+              value={formData.fullname}
               onChange={handleChange}
               className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-300"
               placeholder="Enter full name"
@@ -83,18 +109,18 @@ function AddAdmin() {
             />
           </div>
 
-          {/* Phone */}
+          {/* phonenumber */}
           <div className="mb-4">
             <label className="block text-sm font-medium text-gray-700">
-              Phone
+              phonenumber
             </label>
             <input
               type="tel"
-              name="phone"
-              value={formData.phone}
+              name="phonenumber"
+              value={formData.phonenumber}
               onChange={handleChange}
               className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-300"
-              placeholder="Enter phone number"
+              placeholder="Enter phonenumber number"
               required
             />
           </div>
@@ -109,6 +135,7 @@ function AddAdmin() {
               value={formData.role}
               onChange={handleChange}
               className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-300"
+              disabled
             >
               <option value="Admin">Admin</option>
               <option value="Moderator">Moderator</option>
