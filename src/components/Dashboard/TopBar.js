@@ -2,6 +2,8 @@ import React from "react";
 import { FiCalendar } from "react-icons/fi";
 
 export const TopBar = () => {
+
+  const username = localStorage.getItem("username")
   // Get the current date
   const currentDate = new Date();
   const formattedDate = currentDate.toLocaleDateString("en-US", {
@@ -15,7 +17,7 @@ export const TopBar = () => {
     <div className="border-bpx-5 bg-white pt-4 px-4 mb-4 mt-2 pb-4 border-stone-200">
       <div className="flex items-center justify-between p-0.5">
         <div>
-          <span className="text-sm font-bold block">🚀 Good morning, Kibrom!</span>
+          <span className="text-sm font-bold block">🚀 Good morning, {username} !</span>
           <span className="text-xs ml-2 block text-stone-500">{formattedDate}</span>
         </div>
 

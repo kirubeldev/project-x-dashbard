@@ -200,6 +200,7 @@ export const Tax = () => {
 
       {/* BarChart */}
       <div className="h-64 mt-12 px-4">
+        <p className="py-4 text-lg">Tax Targeted</p>
         <ResponsiveContainer width="100%" height="100%">
           <BarChart
             data={processedData}
@@ -229,6 +230,41 @@ export const Tax = () => {
               labelClassName="text-xs text-stone-500"
             />
             <Bar dataKey="quantity" fill="#34d399" barSize={20} /> {/* Adjust barSize for width */}
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
+
+      <div className="h-94 mt-[100px] px-4">
+        <p className="text-lg py-5">Tax Collected</p>
+        <ResponsiveContainer width="100%" height="100%">
+          <BarChart
+            data={processedData}
+            margin={{
+              top: 0,
+              right: 0,
+              left: -24,
+              bottom: 0,
+            }}
+          >
+            <CartesianGrid stroke="#c5e4e7" />
+            <XAxis
+              dataKey="region"
+              axisLine={false}
+              tickLine={false}
+              className="text-xs font-bold"
+              padding={{ right: 4 }}
+            />
+            <YAxis
+              className="text-xs font-bold"
+              axisLine={false}
+              tickLine={false}
+              domain={[0, 'dataMax - 90']} // Adjust domain as needed
+            />
+            <Tooltip
+              wrapperClassName="text-sm rounded"
+              labelClassName="text-xs text-stone-500"
+            />
+            <Bar dataKey="quantity" fill="gray" barSize={20} /> {/* Adjust barSize for width */}
           </BarChart>
         </ResponsiveContainer>
       </div>

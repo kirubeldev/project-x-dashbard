@@ -13,6 +13,8 @@ import { MdDashboard } from "react-icons/md";
 import { BsFileBarGraph, BsHouse, BsHouseAdd, BsPaperclip } from "react-icons/bs";
 import { GrContact } from "react-icons/gr";
 import { FaHandPaper, FaPaperPlane, FaParagraph } from "react-icons/fa";
+import { userAgent } from "next/server";
+import { FaUser } from "react-icons/fa6";
 
 export const RouteSelect = () => {
   const pathname = usePathname(); // Get the current path
@@ -59,6 +61,7 @@ export const RouteSelect = () => {
         />
       </Link>
 
+    
       <Link href={"/bookings"}>
         <Route
           Icon={BsHouse}
@@ -66,12 +69,18 @@ export const RouteSelect = () => {
           title="Bookings"
         />
       </Link>
-
       <Link href={"/addadmin"}>
         <Route
           Icon={FiLink}
           selected={pathname === "/addadmin"} // Fixed the path for "Add Admin"
           title="Add Admin"
+        />
+      </Link>
+      <Link href={"/role"}>
+        <Route
+          Icon={FaUser}
+          selected={pathname === "/role"} // Fixed the path for "Add Admin"
+          title="Role"
         />
       </Link>
     </div>

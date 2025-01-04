@@ -5,33 +5,27 @@ export const StatCards = () => {
   return (
     <div className="flex w-full  justify-between">
       <Card
-        title="Total Revenue"
-        value="$120,054.24"
+        title="Total tax collected"
+        value="ETB 120,054.24"
         pillText="2.75%"
         trend="up"
         period="From Jan 1st - Jul 31st"
       />
        <Card
-        title="Total Sold houses"
+        title="Total sold properties"
         value="120,054"
         pillText="2.75%"
         trend="up"
         period="From Jan 1st - Jul 31st"
       />
       <Card
-        title="Houses for Sales"
+        title="Total properties listed"
         value="276"
         pillText="1.01%"
         trend="down"
         period="From Jan 1st - Jul 31st"
       />
-      <Card
-        title="Total Houses"
-        value="8"
-        pillText="60.75%"
-        trend="up"
-        period="Previous 365 days"
-      />
+    
     </div>
   );
 };
