@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import React, { useState, useEffect } from "react";
 import { FaPlus, FaXmark } from "react-icons/fa6";
 import { FiFilter } from "react-icons/fi";
@@ -13,6 +14,7 @@ const BookingPage = () => {
   const [newRole, setNewRole] = useState({ name: "", description: "" });
   const bookingsPerPage = 7;
 
+  const router = useRouter();
   // Fetch bookings data from API
   useEffect(() => {
     const fetchBookings = async () => {
@@ -79,6 +81,7 @@ const BookingPage = () => {
         setBookings((prevBookings) => [result, ...prevBookings]);
         setNewRole({ name: "", description: "" }); // Reset form fields
         setShowForm(false); // Close form
+        router.push("/role")
         console.log("Role added successfully:", result);
       } else {
         console.error("Error adding role:", result);
