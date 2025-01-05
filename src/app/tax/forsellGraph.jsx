@@ -234,9 +234,9 @@ export const Tax = () => {
         </ResponsiveContainer>
       </div>
 
-      <div className="h-94 mt-[100px] px-4">
+      <div className="h-[294px] mt-[100px] px-4">
         <p className="text-lg py-5">Tax Collected</p>
-        <ResponsiveContainer width="100%" height="100%">
+        <ResponsiveContainer width="100%" height="80%">
           <BarChart
             data={processedData}
             margin={{
