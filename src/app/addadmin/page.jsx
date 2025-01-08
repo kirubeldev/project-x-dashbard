@@ -58,6 +58,9 @@ function AddAdmin() {
       if (response.ok) {
         const data = await response.json();
         setAdmins(data.reverse());
+        console.log(data);
+
+        
       } else {
         toast.error("Failed to fetch admins.");
       }
@@ -180,7 +183,7 @@ function AddAdmin() {
                       </p>
                       <p className="text-sm font-bold whitespace-nowrap">
                         Role:{" "}
-                        <span className="text-sm font-normal">{admin.role}</span>
+                        <span className="text-sm font-normal">{admin?.role?.name}</span>
                       </p>
                     </div>
                   </div>

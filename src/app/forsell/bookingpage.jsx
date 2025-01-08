@@ -4,6 +4,8 @@ import React, { useState, useEffect } from "react";
 import { FiArrowUpRight, FiMoreHorizontal, FiX, FiFilter } from "react-icons/fi";
 import { ForsellGraph } from './forsellGraph'; // Import the ActivityGraph component
 import { FaBed, FaBath, FaMapMarkerAlt, FaTag, FaClipboardList } from "react-icons/fa";
+import Changestatus from "./changeStatus"
+import axios from "axios"; // Import axios here
 
 const regions = ["Bole", "Lideta", "Arada", "Gulele", "Kolfe Keraniyo", "Yeka", "Nefas Selk Lafto", "Addis Ketema", "Akaki Kality", "Kirkos", "Lemi Kura"];
 
@@ -12,10 +14,35 @@ const InventoryPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedProperty, setSelectedProperty] = useState(null);
   const [filteredRegion, setFilteredRegion] = useState("");
+  
   const [showGraph, setShowGraph] = useState(false); // State to toggle between table and graph
   const [isLoading, setIsLoading] = useState(true); // Loading state
   const [error, setError] = useState(null); // Error state
   const rowsPerPage = 10;
+
+
+
+
+
+
+  const [Status, setStatus] = useState([]); // State to hold status options
+  const [filteredStatus, setFilteredStatus] = useState("");
+
+  // Fetch Status options from API
+  useEffect(() => {
+    const fetchStatusOptions = async () => {
+      try {
+        const response = await axios.get("/your-api-endpoint/status"); // Replace with your API
+        setStatus(response.data); // Assuming the API returns an array of status options
+      } catch (error) {
+        console.error("Error fetching status options:", error);
+      }
+    };
+
+    fetchStatusOptions();
+  }, []);
+
+
 
   // Fetch the data when the component mounts
   useEffect(() => {
@@ -27,6 +54,7 @@ const InventoryPage = () => {
         }
         const data = await response.json();
         console.log(data);
+        setStatus(data.status)
         
         setProperties(data.reverse()); // Reverse the data array correctly by creating a new array
         setIsLoading(false);
@@ -43,6 +71,9 @@ const InventoryPage = () => {
   const startIndex = (currentPage - 1) * rowsPerPage;
   const currentData = properties
     .filter(property => !filteredRegion || property.region === filteredRegion)
+    .slice(startIndex, startIndex + rowsPerPage);
+    const currentDatastat = properties
+    .filter(property => !filteredStatus || property.status === filteredStatus)
     .slice(startIndex, startIndex + rowsPerPage);
 
   const handlePageChange = (page) => {
@@ -69,6 +100,16 @@ const InventoryPage = () => {
     setFilteredRegion(region);
     setCurrentPage(1); // Reset to first page when filtering
   };
+  const handleFilterChangeStatus = (status) => {
+    setFilteredStatus(status);
+  
+    const filteredData = data?.filter((item) =>
+      status ? item.status.toLowerCase() === status.toLowerCase() : true
+    );
+  
+    setCurrentData(filteredData);
+  };
+  
 
   if (isLoading) {
     return <div>Loading...</div>; // Loading indicator
@@ -78,29 +119,50 @@ const InventoryPage = () => {
     return <div>Error: {error}</div>; // Error message
   }
 
+  const statuses = ["Active", "pending", "canceled"];
+
   return (
     <div className="relative">
       <div className="p-4 rounded border border-stone-300">
         <div className="mb-4 flex items-center justify-between">
           <h3 className="text-lg font-medium">Properties for Sale in Addis Ababa</h3>
           <div className="flex items-center gap-2">
-            <button 
+            <button
               className="flex items-center text-sm text-violet-500 hover:underline"
               onClick={() => handleFilterChange("")}
             >
               <FiFilter className="mr-1" /> Filter
             </button>
-            <select 
+            <select
               className="border rounded p-1 text-sm outline-none"
               value={filteredRegion}
               onChange={(e) => handleFilterChange(e.target.value)}
             >
               <option value="">All Regions</option>
               {regions.map((region) => (
-                <option key={region} value={region}>{region}</option>
+                <option key={region} value={region}>
+                  {region}
+                </option>
               ))}
             </select>
-            <button 
+  
+            <select
+              className="border rounded p-1 text-sm outline-none"
+              value={filteredStatus}
+              onChange={(e) => handleFilterChangeStatus(e.target.value)}
+            >
+              <option value="">Status</option>
+              {statuses?.length > 0 ? (
+                statuses.map((status) => (
+                  <option key={status} value={status}>
+                    {status}
+                  </option>
+                ))
+              ) : (
+                <option>Loading...</option> // In case statuses are still being fetched
+              )}
+            </select>
+            <button
               className="ml-2 px-3 py-1 border rounded text-sm hover:bg-gray-200"
               onClick={() => setShowGraph(!showGraph)} // Toggle between table and graph
             >
@@ -108,7 +170,7 @@ const InventoryPage = () => {
             </button>
           </div>
         </div>
-        
+  
         {showGraph ? (
           <ForsellGraph data={currentData} /> // Use ActivityGraph component
         ) : (
@@ -121,11 +183,11 @@ const InventoryPage = () => {
                     key={index}
                     name={item.name}
                     level={item.level}
-                   
                     estimatedPrice={item.estimatedPrice}
                     sku={item.sku}
                     category={item.category}
                     region={item.region}
+                    status={item.status}
                     currentOwnerName={item.currentOwnerName}
                     onClick={() => openDetail(item)}
                     order={startIndex + index + 1}
@@ -143,12 +205,17 @@ const InventoryPage = () => {
           </>
         )}
       </div>
-
+  
       {selectedProperty && (
-        <DetailPanel property={selectedProperty} onClose={closeDetail} onOutsideClick={handleOutsideClick} />
+        <DetailPanel
+          property={selectedProperty}
+          onClose={closeDetail}
+          onOutsideClick={handleOutsideClick}
+        />
       )}
     </div>
   );
+  
 };
 
 const TableHead = () => {
@@ -160,6 +227,7 @@ const TableHead = () => {
         <th className="text-start p-2">estimatedPrice</th>
         <th className="text-start p-2">categorie</th>
         <th className="text-start p-2">Region</th>
+        <th className="text-start p-2">status</th>
         <th className="text-start p-2">Current owner</th>
         <th className="w-8"></th>
       </tr>
@@ -167,7 +235,7 @@ const TableHead = () => {
   );
 };
 
-const TableRow = ({ name, quantity, estimatedPrice, level, currentOwnerName, category, region, onClick, order }) => {
+const TableRow = ({ name, status, quantity, estimatedPrice, level, currentOwnerName, category, region, onClick, order }) => {
   // console.log({ name, quantity, estimatedPrice, level, currentOwnerName, category, region }); // Add this line to debug
   return (
     <tr onClick={onClick} className={`${order % 2 === 0 ? "bg-white" : "bg-zinc-200"} hover:bg-gray-100 cursor-pointer`}>
@@ -180,6 +248,16 @@ const TableRow = ({ name, quantity, estimatedPrice, level, currentOwnerName, cat
       <td className="p-2">{estimatedPrice}</td>
       <td className="p-2">{category}</td>
       <td className="p-2">{region}</td>
+      <td className="p-2 flex items-center">
+  {/* Status Circle */}
+  <span
+    className={`w-2.5 h-2.5 rounded-full mr-2 ${status === 'Active' ? 'bg-green-500' : 
+    status === 'pending' ? 'bg-yellow-500' : 
+    status === 'canceled' ? 'bg-red-500' : 'bg-red-500'}`}
+  ></span>
+  {/* Status Text */}
+  {status}
+</td>
       <td className="p-2">{currentOwnerName}</td>
       <td className="w-8">
         <button className="hover:bg-gray-200 transition-colors grid place-content-center rounded text-sm">
@@ -226,36 +304,147 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
 };
 
 const DetailPanel = ({ property, onClose, onOutsideClick }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
+
+  const openImageModal = (image) => {
+    setSelectedImage(image);
+    setIsModalOpen(true);
+  };
+
+  const closeImageModal = () => {
+    setIsModalOpen(false);
+    setSelectedImage(null);
+  };
+
+  // Handle status change with API call
+  const [status, setStatus] = useState(property.status);
+
+  // Handle status change
+  const handleStatusChange = async (newStatus) => {
+    try {
+      const response = await axios.post(`https://projectx-backend-escf.onrender.com/api/v1/${newStatus}/${property._id}`);
+      setStatus(response.data.property.status);
+    } catch (error) {
+      console.error("Error updating status:", error);
+    }
+  };
+
   return (
     <div
       id="detail-overlay"
-      className="fixed inset-0 flex items-center justify-end bg-black bg-opacity-70 z-50"
+      className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
       onClick={onOutsideClick}
     >
-      <div className="bg-white w-1/3 h-full p-6 rounded-l-lg shadow-lg relative overflow-y-auto">
+      <div className="bg-white w-full md:w-2/3 h-full py-8 px-6 rounded-lg shadow-2xl relative overflow-y-auto">
         <button
           className="absolute top-4 right-4 text-gray-600 hover:text-gray-900"
           onClick={onClose}
         >
-          <FiX size={20} />
+          <FiX size={24} />
         </button>
-        <h3 className="text-xl font-semibold mb-4">Property Details</h3>
-        <div className="space-y-3">
-          <div><strong>Name:</strong> {property.name}</div>
-          <div><strong>Level:</strong> {property.level}</div>
-          <div><strong>Address:</strong> {property.address}</div>
-          <div><strong>estimatedPrice:</strong> {property.estimatedestimatedPrice}</div>
-          <div><strong>Bedrooms:</strong> {property.num_bedrooms}</div>
-          <div><strong>Bathrooms:</strong> {property.num_bathrooms}</div>
-          <div><strong>category:</strong> {property.category}</div>
-          <div><strong>Region:</strong> {property.region}</div>
-          <div><strong>Description:</strong> {property.description}</div>
-          <div><strong>Owner:</strong> {property.currentOwnerName}</div>
-          <div><strong>Email:</strong> {property.email}</div>
-          <div><strong>Phone Number:</strong> {property.phoneNumber}</div>
-          <div><strong>Available From:</strong> {new Date(property.available_from).toLocaleDateString()}</div>
+
+        <h3 className="text-2xl font-semibold mb-6 text-center text-gray-800">Property Details</h3>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6">
+          <div className="space-y-2">
+            <div><strong className="text-gray-600">Name:</strong> {property.name}</div>
+            <div><strong className="text-gray-600">Level:</strong> {property.level}</div>
+            <div><strong className="text-gray-600">Address:</strong> {property.address}</div>
+            <div><strong className="text-gray-600">Estimated Price:</strong> {property.estimatedPrice}</div>
+            <div><strong className="text-gray-600">Bedrooms:</strong> {property.num_bedrooms}</div>
+            <div><strong className="text-gray-600">Bathrooms:</strong> {property.num_bathrooms}</div>
+            <div><strong className="text-gray-600">Category:</strong> {property.category}</div>
+            <div><strong className="text-gray-600">Region:</strong> {property.region}</div>
+            <div><strong className="text-gray-600">Description:</strong> {property.description}</div>
+            <div><strong className="text-gray-600">Owner:</strong> {property.currentOwnerName}</div>
+            <div><strong className="text-gray-600">Email:</strong> {property.email}</div>
+            <div><strong className="text-gray-600">Phone Number:</strong> {property.phoneNumber}</div>
+          </div>
+
+          <div className="space-y-2">
+            <div className="grid grid-cols-2 gap-4">
+              <img
+                src={property.other}
+                alt="Other"
+                className="rounded-lg shadow-md object-cover w-full h-32 cursor-pointer"
+                onClick={() => openImageModal(property.other)}
+              />
+              <img
+                src={property.digitalCard}
+                alt="Digital Card"
+                className="rounded-lg shadow-md object-cover w-full h-32 cursor-pointer"
+                onClick={() => openImageModal(property.digitalCard)}
+              />
+              <img
+                src={property.nationalid}
+                alt="National ID"
+                className="rounded-lg shadow-md object-cover w-full h-32 cursor-pointer"
+                onClick={() => openImageModal(property.nationalid)}
+              />
+              <img
+                src={property.maritualStatus}
+                alt="Marital Status"
+                className="rounded-lg shadow-md object-cover w-full h-32 cursor-pointer"
+                onClick={() => openImageModal(property.maritualStatus)}
+              />
+            </div>
+
+            <div>
+              <strong className="text-gray-600">Status:</strong>
+              <span
+                className={`inline-block px-4 py-2 rounded-full text-white 
+                  ${status === 'Active' ? 'bg-green-500' : 
+                   status === 'pending' ? 'bg-yellow-500' : 
+                   status === 'cancled' ? 'bg-red-500' : 
+                   'bg-gray-500'}`}
+              >
+                {status} {/* Displaying the status */}
+              </span>
+            </div>
+
+            <div><strong className="text-gray-600">Available From:</strong> {new Date(property.available_from).toLocaleDateString()}</div>
+          </div>
+        </div>
+
+        {/* Status change buttons */}
+        <div className="mt-6 flex justify-between">
+          <button
+            className="bg-green-500 text-white p-3 rounded-lg w-full mr-2 hover:bg-green-600 transition duration-200"
+            onClick={() => handleStatusChange('activate')}
+          >
+            Activate
+          </button>
+          <button
+            className="bg-yellow-500 text-white p-3 rounded-lg w-full mr-2 hover:bg-yellow-600 transition duration-200"
+            onClick={() => handleStatusChange('pending')}
+          >
+            Mark as Pending
+          </button>
+          <button
+            className="bg-red-500 text-white p-3 rounded-lg w-full hover:bg-red-600 transition duration-200"
+            onClick={() => handleStatusChange('cancel')}
+          >
+            Cancel
+          </button>
         </div>
       </div>
+
+      {/* Image Modal */}
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-60" onClick={closeImageModal}>
+          <div className="bg-white p-6 rounded-lg max-w-4xl max-h-full overflow-hidden">
+            <button className="absolute top-4 right-4 text-gray-600 hover:text-gray-900" onClick={closeImageModal}>
+              <FiX size={24} />
+            </button>
+            <img
+              src={selectedImage}
+              alt="Enlarged view"
+              className="w-full h-auto object-contain"
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 };
