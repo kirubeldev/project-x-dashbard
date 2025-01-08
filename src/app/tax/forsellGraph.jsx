@@ -12,6 +12,7 @@ import {
   LineChart,
   Bar,
   BarChart,
+  Legend,
 } from "recharts";
 
 // Example data array (truncated for brevity)
@@ -135,6 +136,56 @@ export const Tax = () => {
     averagePrice: item.averagePrice,
   }));
 
+
+
+
+
+
+
+
+
+
+
+  const datas = [
+    {
+      "name": "Page A",
+      "uv": 4000,
+      "pv": 2400
+    },
+    {
+      "name": "Page B",
+      "uv": 3000,
+      "pv": 1398
+    },
+    {
+      "name": "Page C",
+      "uv": 2000,
+      "pv": 9800
+    },
+    {
+      "name": "Page D",
+      "uv": 2780,
+      "pv": 3908
+    },
+    {
+      "name": "Page E",
+      "uv": 1890,
+      "pv": 4800
+    },
+    {
+      "name": "Page F",
+      "uv": 2390,
+      "pv": 3800
+    },
+    {
+      "name": "Page G",
+      "uv": 3490,
+      "pv": 4300
+    }
+  ]
+  
+                              
+  
   return (
     <div className="col-span-8 overflow-hidden rounded border border-stone-300">
       <div className="p-4">
@@ -234,20 +285,11 @@ export const Tax = () => {
         </ResponsiveContainer>
       </div>
 
-      <div className="h-[294px] mt-[100px] px-4">
-        <p className="text-lg py-5">Selling tax</p>
-        <ResponsiveContainer width="100%" height="80%">
-          <BarChart
-            data={processedData}
-            margin={{
-              top: 0,
-              right: 0,
-              left: -24,
-              bottom: 0,
-            }}
-          >
-            <CartesianGrid stroke="#c5e4e7" />
-            <XAxis
+      <div className="h-[294px] mt-[100px] w-full px-4">
+      <p className="text-lg py-5">Selling tax</p>
+      <BarChart width={1124} height={250} data={data}>
+    <CartesianGrid strokeDasharray="2 2" />
+    <XAxis
               dataKey="region"
               axisLine={false}
               tickLine={false}
@@ -258,16 +300,22 @@ export const Tax = () => {
               className="text-xs font-bold"
               axisLine={false}
               tickLine={false}
-              domain={[0, 'dataMax - 90']} // Adjust domain as needed
+              domain={[0, 'dataMax + 10']} // Adjust domain as needed
             />
             <Tooltip
               wrapperClassName="text-sm rounded"
               labelClassName="text-xs text-stone-500"
             />
-            <Bar dataKey="quantity" fill="gray" barSize={20} /> {/* Adjust barSize for width */}
-          </BarChart>
-        </ResponsiveContainer>
-      </div>
+    <Legend />
+
+               <Bar dataKey="quantity" fill="#34d399" barSize={20} /> {/* Adjust barSize for width */}
+               <Bar dataKey="quantity" fill="#2478cc" barSize={20} /> {/* Adjust barSize for width */}
+
+  </BarChart>
+  </div>
+
+
+    
 
       <div className="h-[294px] mt-[100px] px-4">
         <p className="text-lg py-5">Tax Collected</p>
@@ -303,6 +351,8 @@ export const Tax = () => {
           </BarChart>
         </ResponsiveContainer>
       </div>
+
+
     </div>
   );
 };

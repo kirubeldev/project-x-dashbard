@@ -102,14 +102,8 @@ const InventoryPage = () => {
   };
   const handleFilterChangeStatus = (status) => {
     setFilteredStatus(status);
-  
-    const filteredData = data?.filter((item) =>
-      status ? item.status.toLowerCase() === status.toLowerCase() : true
-    );
-  
-    setCurrentData(filteredData);
+    setCurrentPage(1); // Reset to first page when filtering
   };
-  
 
   if (isLoading) {
     return <div>Loading...</div>; // Loading indicator
@@ -119,103 +113,89 @@ const InventoryPage = () => {
     return <div>Error: {error}</div>; // Error message
   }
 
-  const statuses = ["Active", "pending", "canceled"];
+ const statuses = ["active", "pending", "canceled"];
 
-  return (
-    <div className="relative">
-      <div className="p-4 rounded border border-stone-300">
-        <div className="mb-4 flex items-center justify-between">
-          <h3 className="text-lg font-medium">Properties for Sale in Addis Ababa</h3>
-          <div className="flex items-center gap-2">
-            <button
-              className="flex items-center text-sm text-violet-500 hover:underline"
-              onClick={() => handleFilterChange("")}
-            >
-              <FiFilter className="mr-1" /> Filter
-            </button>
-            <select
-              className="border rounded p-1 text-sm outline-none"
-              value={filteredRegion}
-              onChange={(e) => handleFilterChange(e.target.value)}
-            >
-              <option value="">All Regions</option>
-              {regions.map((region) => (
-                <option key={region} value={region}>
-                  {region}
-                </option>
-              ))}
-            </select>
-  
-            <select
-              className="border rounded p-1 text-sm outline-none"
-              value={filteredStatus}
-              onChange={(e) => handleFilterChangeStatus(e.target.value)}
-            >
-              <option value="">Status</option>
-              {statuses?.length > 0 ? (
-                statuses.map((status) => (
-                  <option key={status} value={status}>
-                    {status}
-                  </option>
-                ))
-              ) : (
-                <option>Loading...</option> // In case statuses are still being fetched
-              )}
-            </select>
-            <button
-              className="ml-2 px-3 py-1 border rounded text-sm hover:bg-gray-200"
-              onClick={() => setShowGraph(!showGraph)} // Toggle between table and graph
-            >
-              {showGraph ? "Show Table" : "Show Graph"}
-            </button>
-          </div>
+return (
+  <div className="relative">
+    <div className="p-4 rounded border border-stone-300">
+      <div className="mb-4 flex items-center justify-between">
+        <h3 className="text-lg font-medium">Properties for Sale in Addis Ababa</h3>
+        <div className="flex items-center gap-2">
+          <button
+            className="flex items-center text-sm text-violet-500 hover:underline"
+            onClick={() => handleFilterChange("")}
+          >
+            <FiFilter className="mr-1" /> Filter
+          </button>
+          <select
+            className="border rounded p-1 text-sm outline-none"
+            value={filteredRegion}
+            onChange={(e) => handleFilterChange(e.target.value)}
+          >
+            <option value="">All Regions</option>
+            {regions.map((region) => (
+              <option key={region} value={region}>
+                {region}
+              </option>
+            ))}
+          </select>
+
+        
+         
+          <button
+            className="ml-2 px-3 py-1 border rounded text-sm hover:bg-gray-200"
+            onClick={() => setShowGraph(!showGraph)} // Toggle between table and graph
+          >
+            {showGraph ? "Show Table" : "Show Graph"}
+          </button>
         </div>
-  
-        {showGraph ? (
-          <ForsellGraph data={currentData} /> // Use ActivityGraph component
-        ) : (
-          <>
-            <table className="w-full table-auto border-collapse">
-              <TableHead />
-              <tbody>
-                {currentData.map((item, index) => (
-                  <TableRow
-                    key={index}
-                    name={item.name}
-                    level={item.level}
-                    estimatedPrice={item.estimatedPrice}
-                    sku={item.sku}
-                    category={item.category}
-                    region={item.region}
-                    status={item.status}
-                    currentOwnerName={item.currentOwnerName}
-                    onClick={() => openDetail(item)}
-                    order={startIndex + index + 1}
-                  />
-                ))}
-              </tbody>
-            </table>
-            {totalPages > 1 && (
-              <Pagination
-                currentPage={currentPage}
-                totalPages={totalPages}
-                onPageChange={handlePageChange}
-              />
-            )}
-          </>
-        )}
       </div>
-  
-      {selectedProperty && (
-        <DetailPanel
-          property={selectedProperty}
-          onClose={closeDetail}
-          onOutsideClick={handleOutsideClick}
-        />
+
+      {showGraph ? (
+        <ForsellGraph data={currentData} /> // Use ActivityGraph component
+      ) : (
+        <>
+          <table className="w-full table-auto border-collapse">
+            <TableHead />
+            <tbody>
+              {currentData.map((item, index) => (
+                <TableRow
+                  key={index}
+                  name={item.name}
+                  level={item.level}
+                  estimatedPrice={item.estimatedPrice}
+                  sku={item.sku}
+                  category={item.category}
+                  region={item.region}
+                  status={item.status}
+                  currentOwnerName={item.currentOwnerName}
+                  onClick={() => openDetail(item)}
+                  order={startIndex + index + 1}
+                />
+              ))}
+            </tbody>
+          </table>
+          {totalPages > 1 && (
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={handlePageChange}
+            />
+          )}
+        </>
       )}
     </div>
-  );
-  
+
+    {selectedProperty && (
+      <DetailPanel
+        property={selectedProperty}
+        onClose={closeDetail}
+        onOutsideClick={handleOutsideClick}
+      />
+    )}
+  </div>
+);
+
 };
 
 const TableHead = () => {
