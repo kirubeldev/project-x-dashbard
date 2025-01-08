@@ -14,11 +14,11 @@ import {
 } from "recharts";
 
 const data = [
-  { feature: "Tracking", mobile: 15, desktop: 110, max: 150 },
-  { feature: "Builder", mobile: 130, desktop: 90, max: 150 },
-  { feature: "Schedule", mobile: 86, desktop: 130, max: 150 },
-  { feature: "AI Train", mobile: 125, desktop: 40, max: 150 },
-  { feature: "Interval", mobile: 148, desktop: 90, max: 150 },
+  { feature: "targeted", Collected: 15, targeted: 110, max: 150 },
+  { feature: "selling", Collected: 130, targeted: 90, max: 150 },
+  { feature: "Collected", Collected: 86, targeted: 130, max: 150 },
+  { feature: "next year", Collected: 125, targeted: 40, max: 150 },
+  { feature: "last year", Collected: 148, targeted: 90, max: 150 },
 ];
 
 export const Barchart = () => {
@@ -38,8 +38,8 @@ export const Barchart = () => {
             <YAxis />
             <Tooltip />
             <Legend />
-            <Bar dataKey="mobile" fill="#8884d8" />
-            <Bar dataKey="desktop" fill="#82ca9d" />
+            <Bar dataKey="targeted" fill="#8884d8" />
+            <Bar dataKey="Collected" fill="#82ca9d" />
           </BarChart>
         </ResponsiveContainer>
       </div>

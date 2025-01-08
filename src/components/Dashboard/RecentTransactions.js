@@ -1,6 +1,6 @@
 "use client"
 import React, { useState, useEffect } from "react";
-import { FiArrowUpRight, FiDollarSign, FiMoreHorizontal } from "react-icons/fi";
+import { FiArrowUpRight, FiDollarSign, FiMoreHorizontal, FiUser } from "react-icons/fi";
 
 export const RecentTransactions = () => {
   const [data, setData] = useState([]);
@@ -36,7 +36,7 @@ export const RecentTransactions = () => {
     <div className="col-span-12 p-4 rounded border border-stone-300">
       <div className="mb-4 flex items-center justify-between">
         <h3 className="flex items-center gap-1.5 font-medium">
-          <FiDollarSign /> Recent Transactions
+          <FiUser /> Recent Property listed
         </h3>
         <button className="text-sm text-violet-500 hover:underline">See all</button>
       </div>
