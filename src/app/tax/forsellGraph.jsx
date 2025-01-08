@@ -287,7 +287,7 @@ export const Tax = () => {
 
       <div className="h-[294px] mt-[100px] w-full px-4">
       <p className="text-lg py-5">Selling tax</p>
-      <BarChart width={1124} height={250} data={data}>
+      <BarChart width={924} height={250} data={data}>
     <CartesianGrid strokeDasharray="2 2" />
     <XAxis
               dataKey="region"
